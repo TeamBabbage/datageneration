@@ -63,8 +63,12 @@ def generateData(n):
         for l,r in bounds:
             instance.append(randint(l,r))
         X.append(instance)
-        Y.append(y(instance) * uniform(0.9, 1.1))
+        Y.append(round(y(instance) * uniform(0.9, 1.1)))
     return X,Y
 
-X,Y = generateData(1)
-print(X,Y)
+X,Y = generateData(100000)
+# print(X,Y)
+
+data = pd.DataFrame(X)
+data['weeksToHouse'] = Y
+data.to_csv('generated.csv', index=False)
