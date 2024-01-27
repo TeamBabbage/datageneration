@@ -1,4 +1,5 @@
 import pandas as pd
+from sklearn.linear_model import LinearRegression
 # {gender, applicantType, minBedSize, olderPersonAssessment, mobilityAssessemnt} -> {weeksToHouse}
 
 # applicantType in {A, B, C} |-> {1,2,3}
@@ -20,6 +21,7 @@ features = data.drop('weeksToHouse', axis=1).values
 labels = data['weeksToHouse'].values
 
 features = list(map(lambda x : [
+    1,
     genderToInteger[x[0]],
     x[1], 
     applicantTypeToInteger[x[2]],
@@ -27,8 +29,22 @@ features = list(map(lambda x : [
     mobilityAssessemntToInteger[x[4]]
 ], features))
 
-# def fitLinear(features, labels):
-    
-#     for feature in features:
+def fitLinear(features, labels):
+    alpha = 0.001    
+    w = [0] * len(features[0])
+    y = lambda x : sum([w[i] * x[i] for i in range(len(x))])
+    count = 0
+    while True:
+        for i in range(len(features)):
+            change = 0
+            for j in range(len(features[i])):
+                change += abs(alpha * (labels[i] - y(features[i])) * features[i][j])
+                w[j] = w[j] + alpha * (labels[i] - y(features[i])) * features[i][j]        
+            count += 1
+        if count > 1000000:
+            break
+    return w
 
 
+w = fitLinear(features, labels)
+print(w)
