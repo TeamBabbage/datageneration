@@ -1,5 +1,5 @@
 import pandas as pd
-# {gender, applicantType, minBedSize, olderPersonAssessment, mobilityAssessemnt} -> {timeToHouse}
+# {gender, applicantType, minBedSize, olderPersonAssessment, mobilityAssessemnt} -> {weeksToHouse}
 
 # applicantType in {A, B, C} |-> {1,2,3}
 # olderPersonAssessment in {Urgent, General, Homeless} |-> {1,2,3}
