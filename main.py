@@ -41,10 +41,21 @@ def fitLinear(features, labels):
                 change += abs(alpha * (labels[i] - y(features[i])) * features[i][j])
                 w[j] = w[j] + alpha * (labels[i] - y(features[i])) * features[i][j]        
             count += 1
-        if count > 1000000:
+        if count > 100000:
             break
     return w
 
+# def score(w, features, labels):
+#     error = 0 
+#     y = lambda x : sum([w[i] * x[i] for i in range(len(x))])
+#     for i in range(len(features)):
+#         error += abs(labels[i] - y(features[i]))
+#     return error 
 
-w = fitLinear(features, labels)
-print(w)
+# w = fitLinear(features, labels)
+# # print(score(w, features, labels))
+
+# reg = LinearRegression().fit(features, labels)
+# print(score(reg.coef_, features, labels))
+
+
