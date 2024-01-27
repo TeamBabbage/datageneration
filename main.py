@@ -1,6 +1,7 @@
 import pandas as pd
 from sklearn.linear_model import LinearRegression
 # {gender, applicantType, minBedSize, olderPersonAssessment, mobilityAssessemnt} -> {weeksToHouse}
+from random import randint
 
 # applicantType in {A, B, C} |-> {1,2,3}
 # olderPersonAssessment in {Urgent, General, Homeless} |-> {1,2,3}
@@ -58,4 +59,19 @@ def fitLinear(features, labels):
 # reg = LinearRegression().fit(features, labels)
 # print(score(reg.coef_, features, labels))
 
+def generateData(n):
+    w = fitLinear(features, labels)
+    y = lambda x : sum([w[i] * x[i] for i in range(len(x))])
 
+    bounds = [[1,2], [1,3], [1,6], [1,4], [1,5]]
+    X = []
+    Y = []
+    for i in range(n):
+        instance = []
+        for l,r in bounds:
+            instance.append(randint(l,r))
+        X.append(instance)
+        Y.append(y(instance))
+    return X,Y
+
+print(generateData(10))
