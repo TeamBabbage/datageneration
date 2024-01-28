@@ -38,19 +38,6 @@ def fitLinear(features, labels):
             break
     return w
 
-# def score(w, features, labels):
-#     error = 0 
-#     y = lambda x : sum([w[i] * x[i] for i in range(len(x))])
-#     for i in range(len(features)):
-#         error += abs(labels[i] - y(features[i]))
-#     return error 
-
-# w = fitLinear(features, labels)
-# # print(score(w, features, labels))
-
-# reg = LinearRegression().fit(features, labels)
-# print(score(reg.coef_, features, labels))
-
 def generateData(n):
     w = fitLinear(features, labels)
     y = lambda x : sum([w[i] * x[i] for i in range(len(x))])
@@ -67,7 +54,6 @@ def generateData(n):
     return X,Y
 
 X,Y = generateData(100000)
-# print(X,Y)
 
 data = pd.DataFrame(X)
 data['weeksToHouse'] = Y
