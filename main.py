@@ -42,7 +42,6 @@ def generateData(n):
 
     
     reg = LinearRegression().fit(features, labels)
-    print(reg.score(features, labels))
     X = []
     Y = []
     m = 0
@@ -58,7 +57,7 @@ def generateData(n):
         ]
         y = reg.predict([instance])[0]
         if y > 0:
-            Y.append(y)
+            Y.append(round(y * uniform(0.98, 1.02)))
             X.append(instance)
             m+=1
     return X,Y
@@ -68,6 +67,15 @@ X,Y = generateData(100000)
     
 # generateData(1)
 
-data = pd.DataFrame(X)
+data = pd.DataFrame(X, columns=[
+    'sex',
+    'age',
+    'minimumBedSize',
+    'maximumBedSize',
+    'medicalRequirments',
+    'isDecant',
+    'ahrcode'
+])
+
 data['weeksToHouse'] = Y
 data.to_csv('generated.csv', index=False)
