@@ -13,7 +13,7 @@ age_ranges = [i[0] for i in ageRangeToPop]
 
 probabilities = [i[1] for i in ageRangeToPop]
 
-# return an age range from the pmf.
+# agerange pmf.
 def getAgeRange():
     return np.random.choice(age_ranges, p=probabilities)
 

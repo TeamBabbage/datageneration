@@ -1,59 +1,62 @@
 import pandas as pd
 from random import randint, uniform
+from age_pmf import getRandomAge
+from gender_pmf import getRandomGender
+from medicalrequirments_pmf import getRandomMedical
+from sklearn.linear_model import LinearRegression
 
 genderToInteger = {'F':1, 'M':2}
 applicantTypeToInteger = {'A': 1, 'B': 2, 'C': 3}
 olderPersonAssessmentToInteger = {'Urgent': 1, 'General': 2, 'Homeless': 3, 'Reserve': 4}
 mobilityAssessemntToInteger = {'Urgent': 1, 'General': 2, 'Homeless': 3, 'Homeless / Priority': 4, 'Reserve': 5}
 
+medicalRequirmentsToInteger = {'N': 1, 'Y': 2}
+
 # Load the dataset
 data = pd.read_csv('sample.csv')
 
 # Split the data into features and label
-features = data.drop('weeksToHouse', axis=1).values
-labels = data['weeksToHouse'].values
+# features = data.drop('weeksToHouse', axis=1).values
+# labels = data['weeksToHouse'].values
 
-features = list(map(lambda x : [
-    1,
-    genderToInteger[x[0]],
-    x[1], 
-    applicantTypeToInteger[x[2]],
-    olderPersonAssessmentToInteger[x[3]],
-    mobilityAssessemntToInteger[x[4]]
-], features))
-
-def fitLinear(features, labels):
-    alpha = 0.001    
-    w = [0] * len(features[0])
-    y = lambda x : sum([w[i] * x[i] for i in range(len(x))])
-    count = 0
-    while True:
-        for i in range(len(features)):
-            change = 0
-            for j in range(len(features[i])):
-                change += abs(alpha * (labels[i] - y(features[i])) * features[i][j])
-                w[j] = w[j] + alpha * (labels[i] - y(features[i])) * features[i][j]        
-            count += 1
-        if count > 100000:
-            break
-    return w
+def fillMissingFeatures(f):
+    features = list(map(lambda x : [
+        genderToInteger[x[0]], #gender
+        getRandomAge(), #age
+        x[1], # min beds
+        x[2], # maxbeds
+        medicalRequirmentsToInteger[getRandomMedical()] # medical requirments none / yes
+    ], f))
+    
+    return features
 
 def generateData(n):
-    w = fitLinear(features, labels)
-    y = lambda x : sum([w[i] * x[i] for i in range(len(x))])
+    features = data.drop('weeksToHouse', axis=1).values
+    labels = data['weeksToHouse'].values
+    features = fillMissingFeatures(features)
 
-    bounds = [[1,2], [1,3], [1,6], [1,4], [1,5]]
+    
+    reg = LinearRegression().fit(features, labels)
+    print(reg.score(features, labels))
     X = []
     Y = []
+
     for i in range(n):
-        instance = []
-        for l,r in bounds:
-            instance.append(randint(l,r))
+        instance = [
+            genderToInteger[getRandomGender()],
+            getRandomAge(),
+            randint(1,5),
+            randint(1,5), 
+            medicalRequirmentsToInteger[getRandomMedical()]
+        ]
         X.append(instance)
-        Y.append(round(y(instance) * uniform(0.9, 1.1)))
+        Y.append(reg.predict([instance])[0])
     return X,Y
 
+
 X,Y = generateData(100000)
+    
+# generateData(1)
 
 data = pd.DataFrame(X)
 data['weeksToHouse'] = Y
