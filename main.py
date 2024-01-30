@@ -3,6 +3,7 @@ from random import randint, uniform
 from age_pmf import getRandomAge
 from gender_pmf import getRandomGender
 from medicalrequirments_pmf import getRandomMedical
+from isDecant_pmf import getRandomIsDecant
 from sklearn.linear_model import LinearRegression
 
 genderToInteger = {'F':1, 'M':2}
@@ -11,7 +12,7 @@ olderPersonAssessmentToInteger = {'Urgent': 1, 'General': 2, 'Homeless': 3, 'Res
 mobilityAssessemntToInteger = {'Urgent': 1, 'General': 2, 'Homeless': 3, 'Homeless / Priority': 4, 'Reserve': 5}
 
 medicalRequirmentsToInteger = {'N': 1, 'Y': 2}
-
+isDecantToInteger = {'N': 1, 'Y': 2}
 # Load the dataset
 data = pd.read_csv('sample.csv')
 
@@ -25,7 +26,8 @@ def fillMissingFeatures(f):
         getRandomAge(), #age
         x[1], # min beds
         x[2], # maxbeds
-        medicalRequirmentsToInteger[getRandomMedical()] # medical requirments none / yes
+        medicalRequirmentsToInteger[getRandomMedical()], # medical requirments none / yes
+        isDecantToInteger[getRandomIsDecant()] # is decant
     ], f))
     
     return features
@@ -47,7 +49,8 @@ def generateData(n):
             getRandomAge(),
             randint(1,5),
             randint(1,5), 
-            medicalRequirmentsToInteger[getRandomMedical()]
+            medicalRequirmentsToInteger[getRandomMedical()],
+            isDecantToInteger[getRandomIsDecant()] 
         ]
         X.append(instance)
         Y.append(reg.predict([instance])[0])
