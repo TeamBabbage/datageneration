@@ -17,6 +17,7 @@ probabilities = [i[1] for i in ageRangeToPop]
 def getAgeRange():
     return np.random.choice(age_ranges, p=probabilities)
 
+# return a random age from the age range returned by getAgeRange()
 def getRandomAge():
     ageRange = getAgeRange()
     ageRange = ageRange.split('-')
