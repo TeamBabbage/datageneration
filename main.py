@@ -4,6 +4,7 @@ from age_pmf import getRandomAge
 from gender_pmf import getRandomGender
 from medicalrequirments_pmf import getRandomMedical
 from isDecant_pmf import getRandomIsDecant
+from ahrcode_pmf import getRandomAHRcode
 from sklearn.linear_model import LinearRegression
 
 genderToInteger = {'F':1, 'M':2}
@@ -13,6 +14,7 @@ mobilityAssessemntToInteger = {'Urgent': 1, 'General': 2, 'Homeless': 3, 'Homele
 
 medicalRequirmentsToInteger = {'N': 1, 'Y': 2}
 isDecantToInteger = {'N': 1, 'Y': 2}
+ahrcodeToInteger = {'A': 1, 'B': 2, 'C': 3, 'D': 4, 'E': 5,'F': 6,'G': 7}
 # Load the dataset
 data = pd.read_csv('sample.csv')
 
@@ -27,7 +29,8 @@ def fillMissingFeatures(f):
         x[1], # min beds
         x[2], # maxbeds
         medicalRequirmentsToInteger[getRandomMedical()], # medical requirments none / yes
-        isDecantToInteger[getRandomIsDecant()] # is decant
+        isDecantToInteger[getRandomIsDecant()], # is decant
+        ahrcodeToInteger[getRandomAHRcode()] # ahr code
     ], f))
     
     return features
@@ -42,18 +45,22 @@ def generateData(n):
     print(reg.score(features, labels))
     X = []
     Y = []
-
-    for i in range(n):
+    m = 0
+    while m < n:
         instance = [
             genderToInteger[getRandomGender()],
             getRandomAge(),
             randint(1,5),
             randint(1,5), 
             medicalRequirmentsToInteger[getRandomMedical()],
-            isDecantToInteger[getRandomIsDecant()] 
+            isDecantToInteger[getRandomIsDecant()],
+            ahrcodeToInteger[getRandomAHRcode()]
         ]
-        X.append(instance)
-        Y.append(reg.predict([instance])[0])
+        y = reg.predict([instance])[0]
+        if y > 0:
+            Y.append(y)
+            X.append(instance)
+            m+=1
     return X,Y
 
 
